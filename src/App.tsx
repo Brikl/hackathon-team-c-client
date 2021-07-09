@@ -4,19 +4,31 @@ import FlowBuilder, { Elements, NodeElement } from "./pages/flow/FlowBuilder";
 import { ReactFlowProvider, useStoreState } from "react-flow-renderer";
 import { FlowBlocks } from "./pages/flow/FlowBlocks";
 import { BlockEditor } from "./pages/flow/NodeEditor";
+import { useEffect } from "react";
 
 const SaveButton = () => {
   const nodes = useStoreState((state) => state.nodes as NodeElement[]);
   const edges = useStoreState((state) => state.edges);
+  const [isLoading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (!isLoading) return;
+    let timer1 = setTimeout(() => setLoading(false), 3000);
+
+    return () => {
+      clearTimeout(timer1);
+    };
+  }, [isLoading]);
   return (
     <Button
       w="8rem"
+      isLoading={isLoading}
       variant="outline"
       textAlign="center"
-      onClick={() =>
-        console.debug("Mutation With These Variable:", { nodes, edges })
-      }
+      onClick={() => {
+        console.debug("Mutation With These Variable:", { nodes, edges });
+        setLoading(true);
+      }}
     >
       <Text fontWeight="bold">Save</Text>
     </Button>
